@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptom Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+           : 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+           ;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Symptom Checker</h1>
+        <p>Please list the symptoms you are experiencing in the text area below:</p>
+        <textarea id="symptoms" placeholder="e.g., headache, fever, nausea"></textarea>
+        <button onclick="checkSymptoms()">Check Symptoms</button>
+        <div class="results" id="results"></div>
+    </div>
+    <script>
+        function checkSymptoms() {
+            const symptoms = document.getElementById('symptoms').value.toLowerCase().split(',').map(s => s.trim());
+            const diseases = {
+                'headache': ['Migraine', 'Tension headache', 'Cluster headache'],
+                    'fever': ['Flu', 'COVID-19', 'Malaria'],
+                    'cough': ['Common Cold', 'Bronchitis', 'Pneumonia'],
+                    'nausea': ['Food poisoning', 'Gastroenteritis', 'Pregnancy'],
+                    'fatigue': ['Anemia', 'Chronic Fatigue Syndrome', 'Hypothyroidism'],
+                    'chest pain': ['Heart Attack', 'Angina', 'Gastroesophageal Reflux Disease (GERD)'],
+                    'shortness of breath': ['Asthma', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Pulmonary Embolism'],
+                    'abdominal pain': ['Appendicitis', 'Irritable Bowel Syndrome (IBS)', 'Gallstones'],
+                    'dizziness': ['Vertigo', 'Low Blood Pressure', 'Dehydration'],
+                    'rash': ['Allergic Reaction', 'Eczema', 'Psoriasis'],
+                    'sore throat': ['Strep Throat', 'Tonsillitis', 'Pharyngitis'],
+                    'diarrhea': ['Irritable Bowel Syndrome (IBS)', 'Gastroenteritis', 'Food Poisoning'],
+                    'constipation': ['Irritable Bowel Syndrome (IBS)', 'Hypothyroidism', 'Dehydration'],
+                    'back pain': ['Herniated Disc', 'Muscle Strain', 'Osteoarthritis'],
+                    'joint pain': ['Rheumatoid Arthritis', 'Osteoarthritis', 'Gout'],
+                    'weight loss': ['Hyperthyroidism', 'Diabetes', 'Cancer'],
+                    'weight gain': ['Hypothyroidism', 'Cushing\'s Syndrome', 'Polycystic Ovary Syndrome (PCOS)'],
+                    'night sweats': ['Tuberculosis', 'Lymphoma', 'Menopause'],
+                    'itching': ['Eczema', 'Psoriasis', 'Scabies'],
+                    'swelling': ['Edema', 'Lymphedema', 'Infection'],
+                    'blurred vision': ['Diabetes', 'Cataracts', 'Glaucoma'],
+                    'hair loss': ['Alopecia', 'Thyroid Disease', 'Nutritional Deficiency'],
+                    'frequent urination': ['Diabetes', 'Urinary Tract Infection (UTI)', 'Prostate Problems'],
+                    'difficulty urinating': ['Prostate Enlargement', 'Urinary Tract Infection (UTI)', 'Kidney Stones'],
+                    'vomiting': ['Gastroenteritis', 'Food Poisoning', 'Pregnancy'],
+                    'dry mouth': ['Dehydration', 'Sjogren\'s Syndrome', 'Diabetes'],
+                    'muscle pain': ['Fibromyalgia', 'Muscle Strain', 'Influenza'],
+                    'palpitations': ['Anxiety', 'Arrhythmia', 'Hyperthyroidism'],
+                    'sweating': ['Hyperthyroidism', 'Menopause', 'Anxiety'],
+                    'tremors': ['Parkinson\'s Disease', 'Essential Tremor', 'Hyperthyroidism'],
+                    'memory loss': ['Alzheimer\'s Disease', 'Dementia', 'Vitamin B12 Deficiency'],
+                    'confusion': ['Delirium', 'Dementia', 'Infection'],
+                    'difficulty swallowing': ['Esophageal Cancer', 'Gastroesophageal Reflux Disease (GERD)', 'Stroke'],
+                    'loss of appetite': ['Depression', 'Cancer', 'Chronic Illness'],
+                    'ear pain': ['Ear Infection', 'Temporomandibular Joint Disorder (TMJ)', 'Eustachian Tube Dysfunction'],
+                    'hearing loss': ['Ear Infection', 'Age-Related Hearing Loss', 'Noise-Induced Hearing Loss'],
+                    'nosebleeds': ['Dry Air', 'Nasal Trauma', 'Hypertension'],
+                    'runny nose': ['Common Cold', 'Allergic Rhinitis', 'Sinusitis'],
+                    'sneezing': ['Allergic Rhinitis', 'Common Cold', 'Influenza'],
+                    'wheezing': ['Asthma', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Allergic Reaction'],
+                    'yellow skin': ['Jaundice', 'Hepatitis', 'Liver Disease'],
+                    'bruising': ['Blood Disorders', 'Vitamin Deficiency', 'Trauma'],
+                    'numbness': ['Peripheral Neuropathy', 'Multiple Sclerosis', 'Diabetes'],
+                    'tingling': ['Peripheral Neuropathy', 'Carpal Tunnel Syndrome', 'Diabetes'],
+                    'cold hands and feet': ['Raynaud\'s Disease', 'Peripheral Artery Disease', 'Hypothyroidism'],
+                    'hot flashes': ['Menopause', 'Hyperthyroidism', 'Infection'],
+                    'difficulty sleeping': ['Insomnia', 'Sleep Apnea', 'Anxiety'],
+                    'excessive sleeping': ['Narcolepsy', 'Depression', 'Hypothyroidism'],
+                    'irritability': ['Anxiety', 'Depression', 'Hormonal Imbalance'],
+                    'depression': ['Major Depressive Disorder', 'Bipolar Disorder', 'Chronic Illness'],
+                    'anxiety': ['Generalized Anxiety Disorder', 'Panic Disorder', 'Hyperthyroidism'],
+                    'hallucinations': ['Schizophrenia', 'Delirium', 'Substance Abuse'],
+                    'seizures': ['Epilepsy', 'Brain Injury', 'Infection'],
+                    'fainting': ['Vasovagal Syncope', 'Heart Problems', 'Dehydration'],
+                    'swollen lymph nodes': ['Infection', 'Lymphoma', 'Leukemia'],
+                    'painful urination': ['Urinary Tract Infection (UTI)', 'Sexually Transmitted Infection (STI)', 'Kidney Stones'],
+                    'blood in urine': ['Urinary Tract Infection (UTI)', 'Kidney Stones', 'Bladder Cancer'],
+                    'blood in stool': ['Hemorrhoids', 'Colorectal Cancer', 'Diverticulosis'],
+                    'chronic cough': ['Chronic Obstructive Pulmonary Disease (COPD)', 'Asthma', 'Lung Cancer'],
+                    'hoarseness': ['Laryngitis', 'Throat Cancer', 'Gastroesophageal Reflux Disease (GERD)'],
+                    'difficulty breathing': ['Asthma', 'Chronic Obstructive Pulmonary Disease (COPD)', 'Heart Failure'],
+                    'swollen ankles': ['Heart Failure', 'Kidney Disease', 'Liver Disease'],
+                    'painful joints': ['Rheumatoid Arthritis', 'Osteoarthritis', 'Gout'],
+                    'stiff joints': ['Osteoarthritis', 'Rheumatoid Arthritis', 'Ankylosing Spondylitis'],
+                    'muscle weakness': ['Muscular Dystrophy', 'Multiple Sclerosis', 'Stroke'],
+                    'loss of balance': ['Vertigo', 'Parkinson\'s Disease', 'Stroke'],
+                    'double vision': ['Multiple Sclerosis', 'Stroke', 'Brain Tumor'],
+                    'sensitivity to light': ['Migraine', 'Meningitis', 'Conjunctivitis'],
+                    'sensitivity to sound': ['Migraine', 'Hyperacusis', 'Ear Infection'],
+                    'ringing in ears': ['Tinnitus', 'Ear Infection', 'Hearing Loss'],
+                    'dry skin': ['Eczema', 'Psoriasis', 'Hypothyroidism'],
+                    'oily skin': ['Acne', 'Hormonal Imbalance', 'Seborrheic Dermatitis'],
+                    'hair thinning': ['Alopecia', 'Nutritional Deficiency', 'Hormonal Imbalance'],
+                    'brittle nails': ['Nutritional Deficiency', 'Hypothyroidism', 'Fungal Infection'],
+                    'frequent infections': ['Immunodeficiency', 'Diabetes', 'Chronic Illness'],
+                    'slow healing wounds': ['Diabetes', 'Poor Circulation', 'Nutritional Deficiency'],
+                    'unexplained bleeding': ['Blood Disorders', 'Vitamin Deficiency', 'Cancer'],
+                    'unexplained bruising': ['Blood Disorders', 'Vitamin Deficiency', 'Trauma'],
+                    'swollen abdomen': ['Ascites', 'Liver Disease', 'Heart Failure'],
+                    'painful abdomen': ['Appendicitis', 'Gallstones', 'Pancreatitis'],
+                    'frequent headaches': ['Migraine', 'Tension Headache', 'Cluster Headache'],
+                    'chronic pain': ['Fibromyalgia', 'Chronic Fatigue Syndrome', 'Arthritis'],
+                    'loss of taste': ['COVID-19', 'Sinus Infection', 'Neurological Disorders'],
+                    'loss of smell': ['COVID-19', 'Sinus Infection', 'Neurological Disorders'],
+                    'frequent thirst': ['Diabetes', 'Dehydration', 'Kidney Disease'],
+                    'frequent hunger': ['Diabetes', 'Hyperthyroidism', 'Hypoglycemia'],
+                    'frequent urination at night': ['Diabetes', 'Prostate Problems', 'Heart Failure'],
+                    'painful intercourse': ['Endometriosis', 'Pelvic Inflammatory Disease (PID)', 'Vaginitis'],
+                    'irregular periods': ['Polycystic Ovary Syndrome (PCOS)', 'Thyroid Disorders', 'Hormonal Imbalance'],
+                    'heavy periods': ['Fibroids', 'Hormonal Imbalance', 'Bleeding Disorders'],
+                    'missed periods': ['Pregnancy', 'Polycystic Ovary Syndrome (PCOS)', 'Thyroid Disorders'],
+                    'hot flashes': ['Menopause', 'Hyperthyroidism']
+                  };
+            let possibleDiseases = new Set();
+            symptoms.forEach(symptom => {
+                if (diseases[symptom]) {
+                    diseases[symptom].forEach(disease => possibleDiseases.add(disease));
+                }
+            });
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Possible Diseases:</h2><ul>' + Array.from(possibleDiseases).map(disease => `<li>${disease}</li>`).join('') + '</ul>';
+        }
+    </script>
+</body>
+</html>
